@@ -54,6 +54,10 @@ def write_file(file_path: str, content: str):
 def append_file(file_path: str, content: str):
     """
     Append content to a file.
+
+    Args:
+        file_path (str): Path of the file
+        content (str): Text content to append
     """
 
     try:
@@ -94,28 +98,41 @@ def read_file(file_path: str):
             "message": str(e)
         }
 
-def exec_shell_command(command: str):
+def exec_shell_command(command: str, confirm: bool = False):
     """
-    Execute a shell command.
+    Execute a shell command with optional user confirmation.
 
     Args:
-        command (str): The shell command to execute
+        command (str): The shell command to execute.
+        confirm (bool): If True, ask the user to confirm before executing.
+                        Defaults to False.
+
+    Returns:
+        dict: Contains status ("success", "error", or "cancelled") and
+              command output or error message.
     """
+
+    if confirm:
+        print("\033[93m[Request]\033[0m")
+        response = input(f'Confirm to execute command "{command}" (y/n)').strip().lower()
+        if response not in ('y', 'yes'):
+            return {
+                "status": "cancelled",
+                "message": "Execution cancelled by user."
+            }
 
     try:
         result = subprocess.run(
-            command, 
-            shell=True, 
-            capture_output=True, 
+            command,
+            shell=True,
+            capture_output=True,
             text=True
         )
-
         return {
             "status": "success",
             "stdout": result.stdout,
             "stderr": result.stderr
         }
-
     except Exception as e:
         return {
             "status": "error",

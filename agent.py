@@ -10,18 +10,18 @@ class Agent:
         self.tools = []
 
     def set_model(self, model : str):
-        '''Set the model for the agent.'''
+        """Set the model for the agent."""
         self.model = model
 
     def add_tool(self, tool : callable | List[callable]):
-        '''Add a tool or a list of tools to the agent.'''
+        """Add a tool or a list of tools to the agent."""
         if isinstance(tool, list):
             self.tools.extend(tool)
         else:
             self.tools.append(tool)
     
     def call(self, messages : List[dict], max_turns=5):
-        '''Call the agent with the given messages'''
+        """Call the agent with the given messages"""
         response = client.chat.completions.create(
             model=self.model, 
             messages=messages, 
