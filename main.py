@@ -1,11 +1,23 @@
+from platform import system
 from dotenv import load_dotenv, find_dotenv
 
 from agent import Agent
 from agent_tools import *
 
 
+def get_system_prompt(prompt_file="./system_prompt_template.md"):
+    os_env = system().lower()  # "linux", "windows", "darwin"
+
+    with open(prompt_file, "r", encoding="utf-8") as f:
+        template = f.read()
+
+    filled_prompt = template.replace("{operating_system_env}", os_env)
+    return filled_prompt
+
+
 if __name__ == "__main__":
 
+    # load LLM API keys from .env file
     load_dotenv(find_dotenv())
 
     deepseek_chat_model = "deepseek:deepseek-chat"
@@ -16,7 +28,7 @@ if __name__ == "__main__":
     messages = [
         {
             "role": "system",
-            "content": "You are CodeCraftAgent, an AI agent that writes and executes code to accomplish any task the user gives you. Before executing the shell command, you should ask the user for confirmation."
+            "content": get_system_prompt()
         }
     ]
 
@@ -26,6 +38,6 @@ if __name__ == "__main__":
             "role": "user",
             "content": user_resquest
         })
-        resp = agent.call(messages)
+        resp = agent.call(messages, max_turns=10)
         print("\033[92m[CodeCraftAgent]\033[0m\n>> ", resp)
 

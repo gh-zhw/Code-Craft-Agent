@@ -98,23 +98,22 @@ def read_file(file_path: str):
             "message": str(e)
         }
 
-def exec_shell_command(command: str, confirm: bool = False):
+def exec_shell_command(command: str, confirm: bool = True):
     """
     Execute a shell command with optional user confirmation.
 
     Args:
         command (str): The shell command to execute.
         confirm (bool): If True, ask the user to confirm before executing.
-                        Defaults to False.
+                        Defaults to True.
 
     Returns:
         dict: Contains status ("success", "error", or "cancelled") and
               command output or error message.
     """
-
     if confirm:
-        print("\033[93m[Request]\033[0m")
-        response = input(f'Confirm to execute command "{command}" (y/n)').strip().lower()
+        print("\033[93m[Shell]\033[0m")
+        response = input(f'Confirm to execute command `{command}` (y/n)').strip().lower()
         if response not in ('y', 'yes'):
             return {
                 "status": "cancelled",
@@ -138,4 +137,3 @@ def exec_shell_command(command: str, confirm: bool = False):
             "status": "error",
             "message": str(e)
         }
-
