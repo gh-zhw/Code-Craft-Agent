@@ -112,13 +112,15 @@ def exec_shell_command(command: str, confirm: bool = True):
               command output or error message.
     """
     if confirm:
-        print("\033[93m[Shell]\033[0m")
-        response = input(f'Confirm to execute command `{command}` (y/n)').strip().lower()
+        print("\033[93m[Confirm]\033[0m", end=" ")
+        response = input(f'Execute command `{command}` (y/n)').strip().lower()
         if response not in ('y', 'yes'):
             return {
                 "status": "cancelled",
                 "message": "Execution cancelled by user."
             }
+
+    print(f"\033[94m[Shell]\033[0m >> {command}")
 
     try:
         result = subprocess.run(
@@ -137,3 +139,29 @@ def exec_shell_command(command: str, confirm: bool = True):
             "status": "error",
             "message": str(e)
         }
+
+def exec_shell_command_with_confirm(command: str):
+    """
+    Execute a shell command with user confirmation.
+
+    Args:
+        command (str): The shell command to execute.
+
+    Returns:
+        dict: Contains status ("success", "error", or "cancelled") and
+              command output or error message.
+    """
+    return exec_shell_command(command=command, confirm=True)
+
+def exec_shell_command_no_confirm(command: str):
+    """
+    Execute a shell command without user confirmation.
+
+    Args:
+        command (str): The shell command to execute.
+
+    Returns:
+        dict: Contains status ("success" or "error") and
+              command output or error message.
+    """
+    return exec_shell_command(command, confirm=False)
